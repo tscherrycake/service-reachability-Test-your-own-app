@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Your App · Mozark DX</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFBFA; --surface:#FFFFFF; --subtle:#F4F5F4;
+  --navy:#00092C; --ink2:#5A6075; --ink3:#8A90A6;
+  --azure:#002DDE; --teal:#2EC4B6; --purple:#9672F8; --purple2:#B089FF;
+  --pink:#F38BA8; --yellow:#F5B82C; --orange:#F35800; --green:#10B981; --red:#EF4444;
+  --border:#E6E6E6; --border-strong:#CECECE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--navy);
+  min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;font-size:14px}
+.tnum{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+.top{display:flex;align-items:center;height:60px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;color:var(--navy)}
+.brand .dot{width:11px;height:11px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--azure),var(--purple),var(--pink),var(--yellow),var(--teal),var(--azure))}
+.brand small{color:var(--ink3);font-weight:500;font-size:11px;letter-spacing:1.4px;text-transform:uppercase}
+.home-btn{margin-left:auto;font-size:13px;font-weight:600;color:var(--azure);background:rgba(0,45,222,.07);
+  border:1px solid rgba(0,45,222,.18);padding:7px 14px;border-radius:8px;cursor:pointer;transition:.18s}
+.home-btn:hover{background:rgba(0,45,222,.12)}
+
+.hero{padding:42px 0 22px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:1.3px;
+  text-transform:uppercase;color:var(--teal);background:rgba(46,196,182,.1);border:1px solid rgba(46,196,182,.3);
+  padding:5px 12px;border-radius:100px}
+.hero h1{font-size:36px;font-weight:800;line-height:1.14;margin:16px 0 10px;letter-spacing:-.5px}
+.hero h1 .g{background:linear-gradient(92deg,var(--azure),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--ink2);font-size:15px;max-width:680px}
+
+.stepper{display:flex;gap:8px;margin:28px 0 22px;flex-wrap:wrap}
+.stepper .st{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--ink3);
+  padding:8px 14px;border:1px solid var(--border);border-radius:100px;background:var(--surface);transition:.25s}
+.stepper .st .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:var(--subtle);color:var(--ink3)}
+.stepper .st.active{color:var(--navy);border-color:var(--azure);background:rgba(0,45,222,.06)}
+.stepper .st.active .n{background:var(--azure);color:#fff}
+.stepper .st.done{color:var(--teal);border-color:rgba(46,196,182,.4)}
+.stepper .st.done .n{background:var(--teal);color:#fff}
+
+.hidden{display:none !important}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:30px;margin-bottom:60px;box-shadow:0 1px 3px rgba(0,9,44,.04)}
+.panel.hidden{display:none}
+.p-head{margin-bottom:22px}
+.p-head h2{font-size:21px;font-weight:700;letter-spacing:-.3px}
+.p-head .sub{color:var(--ink2);font-size:13.5px;margin-top:5px}
+
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;font-weight:600;color:var(--navy)}
+.field label .req{color:var(--orange)}
+.field .hint{font-size:11px;color:var(--ink3);font-weight:400}
+.inp,.sel{width:100%;background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;
+  color:var(--navy);font-family:inherit;font-size:14px;padding:11px 13px;transition:.16s}
+.inp:focus,.sel:focus{outline:none;border-color:var(--azure);box-shadow:0 0 0 3px rgba(0,45,222,.12)}
+.inp::placeholder{color:var(--ink3)}
+.sel{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238A90A6' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center}
+.with-prefix{position:relative}
+.with-prefix .pfx{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:14px}
+.with-prefix .inp{padding-left:62px}
+
+.type-select{position:relative}
+.type-btn{width:100%;background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;
+  color:var(--navy);font-family:inherit;font-size:14px;padding:11px 13px;cursor:pointer;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;transition:.16s}
+.type-btn:focus{outline:none;border-color:var(--azure);box-shadow:0 0 0 3px rgba(0,45,222,.12)}
+.type-panel{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;background:var(--surface);
+  border:1px solid var(--border-strong);border-radius:10px;box-shadow:0 12px 28px -8px rgba(0,9,44,.18);
+  max-height:280px;overflow:auto;padding:8px}
+.type-panel label{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:13px;cursor:pointer}
+.type-panel label:hover{background:var(--subtle)}
+.type-panel .tdiv{height:1px;background:var(--border);margin:6px 2px}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,9,44,.45);display:flex;align-items:center;justify-content:center;z-index:100}
+.modal-card{background:var(--surface);border-radius:14px;max-width:900px;width:92%;max-height:85vh;
+  display:flex;flex-direction:column;box-shadow:0 24px 60px -12px rgba(0,9,44,.35)}
+.modal-head{padding:20px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-head h3{font-size:16px;font-weight:700;margin:0}
+.modal-head .sub{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.modal-toolbar{padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal-toolbar label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer}
+.modal-body{padding:0 24px;overflow:auto;flex:1}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center}
+.sel-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.sel-table th{text-align:left;padding:9px 10px;color:var(--ink3);font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface)}
+.sel-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.sel-table .url-cell{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+
+.cta{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-size:14px;font-weight:700;
+  color:#fff;background:var(--azure);border:none;border-radius:9px;padding:13px 24px;cursor:pointer;transition:.18s;
+  box-shadow:0 6px 18px -8px rgba(0,45,222,.6)}
+.cta:hover{background:#0024b8;transform:translateY(-1px)}
+.cta:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.cta.ghost{background:var(--surface);color:var(--navy);border:1px solid var(--border-strong);box-shadow:none}
+.cta.ghost:hover{border-color:var(--azure);color:var(--azure);background:rgba(0,45,222,.04)}
+.cta.teal{background:var(--teal);box-shadow:0 6px 18px -8px rgba(46,196,182,.6)}
+.cta.teal:hover{background:#28b0a3}
+.actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;align-items:center}
+.actions .spacer{flex:1}
+
+.scan-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.scan-ring{width:46px;height:46px;flex-shrink:0;position:relative}
+.scan-ring svg{transform:rotate(-90deg)}
+.scan-ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:700}
+.log{background:var(--subtle);border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+  font-size:12.5px;line-height:1.9;max-height:260px;overflow:auto;color:var(--ink2);font-variant-numeric:tabular-nums}
+.log .ts{color:var(--ink3)} .log .ok{color:var(--teal);font-weight:600} .log .info{color:var(--azure)}
+.log .warnc{color:#c98f00} .log .errc{color:var(--orange);font-weight:600} .log .ep{color:var(--navy);font-weight:600}
+
+.ep-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.ep-table th{text-align:left;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);
+  font-weight:600;padding:9px 12px;border-bottom:1px solid var(--border-strong);background:var(--subtle)}
+.ep-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.ep-table tr:hover td{background:var(--subtle)}
+.tag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:6px}
+.tag.api{background:rgba(150,114,248,.14);color:#6a48c9;border:1px solid rgba(150,114,248,.3)}
+.tag.auth{background:rgba(243,139,168,.16);color:#c54f72;border:1px solid rgba(243,139,168,.35)}
+.tag.main{background:rgba(0,45,222,.1);color:var(--azure);border:1px solid rgba(0,45,222,.25)}
+.tag.cdn{background:rgba(46,196,182,.14);color:#1c9285;border:1px solid rgba(46,196,182,.3)}
+.tag.search{background:rgba(245,184,44,.16);color:#a87a00;border:1px solid rgba(245,184,44,.35)}
+.tag.custom{background:rgba(90,96,117,.12);color:#5A6075;border:1px solid rgba(90,96,117,.3)}
+.url-cell{font-size:11.5px;color:var(--ink2);word-break:break-all;max-width:420px;font-variant-numeric:tabular-nums}
+.host-cell{font-size:12px;color:var(--navy)}
+.ep-count{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 4px}
+.ep-count .c{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2)}
+.ep-count .c b{color:var(--navy);font-weight:700}
+.ep-count .d{width:9px;height:9px;border-radius:3px}
+
+/* ===== DASHBOARD ===== */
+.dash{position:relative}
+.dash.locked .dash-inner{filter:blur(7px);pointer-events:none;user-select:none}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;width:3px;height:100%}
+.kpi.b1::before{background:var(--azure)} .kpi.b2::before{background:var(--teal)}
+.kpi.b3::before{background:var(--purple)} .kpi.b4::before{background:var(--yellow)} .kpi.b5::before{background:var(--orange)}
+.kpi .lab{font-size:10.5px;color:var(--ink3);font-weight:600;letter-spacing:.2px;text-transform:uppercase}
+.kpi .val{font-size:25px;font-weight:800;margin-top:5px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:10.5px;color:var(--ink2);margin-top:2px}
+.kpi .val .u{font-size:13px;color:var(--ink2);font-weight:600}
+
+.dash-sec{margin-bottom:26px}
+.dash-sec h3{font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--ink2);
+  margin-bottom:13px;display:flex;align-items:center;gap:9px}
+.dash-sec h3 .ic{width:6px;height:18px;border-radius:3px;background:linear-gradient(var(--teal),var(--azure))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+
+/* waterfall */
+.wf-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.wf-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+.wf-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.wf-row{display:grid;grid-template-columns:170px 1fr 64px;align-items:center;gap:12px;margin-bottom:9px}
+.wf-row .nm{font-size:12px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px}
+.wf-bar{display:flex;height:34px;border-radius:9px;overflow:hidden;background:var(--subtle)}
+.wf-seg{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;position:relative;
+  transition:filter .15s}
+.wf-seg:hover{filter:brightness(1.08)}
+.wf-seg .tip{position:absolute;bottom:115%;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;
+  border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;white-space:nowrap;z-index:99;opacity:0;
+  pointer-events:none;transition:opacity .12s;box-shadow:0 4px 14px rgba(0,9,44,.3)}
+.wf-seg:hover .tip{opacity:1}
+.wf-row .tot{font-size:12px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:grid;grid-template-columns:150px 1fr 70px;align-items:center;gap:14px}
+.bar-row .nm{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.bar-track{height:10px;background:var(--subtle);border:1px solid var(--border);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;background:var(--azure)}
+.bar-row .vv{font-size:12.5px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.split-3{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+@media(max-width:880px){.split,.split-3{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .fgrid{grid-template-columns:1fr}.bar-row{grid-template-columns:110px 1fr 56px}.wf-row{grid-template-columns:120px 1fr 52px}}
+
+/* donut */
+.donut-legend{display:flex;flex-direction:column;gap:9px}
+.donut-legend .dl{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink2)}
+.donut-legend .dl i{width:11px;height:11px;border-radius:3px}
+.donut-legend .dl b{margin-left:auto;color:var(--navy);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* drill-in */
+.drill-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.drill-sel{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font-size:12px;font-weight:600;color:var(--ink3);padding:7px 14px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface);transition:.16s}
+.tab:hover{color:var(--ink2)}
+.tab.on{color:var(--azure);background:rgba(0,45,222,.07);border-color:var(--azure)}
+.tab .b{display:inline-block;margin-left:6px;font-size:10px;background:rgba(243,88,0,.14);color:var(--orange);padding:1px 6px;border-radius:6px}
+.tabview{display:none} .tabview.on{display:block}
+
+.raw-table{width:100%;border-collapse:collapse;font-size:11.5px;font-variant-numeric:tabular-nums}
+.raw-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px;max-height:380px}
+.raw-table th{position:sticky;top:0;background:var(--subtle);text-align:left;font-size:10px;letter-spacing:.3px;
+  text-transform:uppercase;color:var(--ink3);font-weight:600;padding:9px 11px;white-space:nowrap;border-bottom:1px solid var(--border-strong)}
+.raw-table td{padding:8px 11px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink2)}
+.raw-table td.ok{color:var(--teal);font-weight:600} .raw-table td.bad{color:var(--orange);font-weight:700}
+.raw-table tr:hover td{background:var(--subtle)}
+.st-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px}
+.st-pill.s2{background:rgba(16,185,129,.14);color:#0c8f63} .st-pill.s3{background:rgba(245,184,44,.18);color:#a87a00}
+.st-pill.s4,.st-pill.s5{background:rgba(243,88,0,.14);color:var(--orange)}
+
+/* packet/ping metric tiles */
+.pp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pp{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:14px}
+.pp .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink3);font-weight:600}
+.pp .v{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.pp .v .u{font-size:12px;color:var(--ink2);font-weight:600}
+@media(max-width:680px){.pp-grid{grid-template-columns:repeat(2,1fr)}}
+
+.fail-card{display:flex;gap:12px;padding:13px 15px;border:1px solid rgba(243,88,0,.3);
+  background:rgba(243,88,0,.05);border-radius:10px;margin-bottom:10px}
+.fail-card .fi{font-size:18px}
+.fail-card .ft{font-size:13px;font-weight:700;color:var(--orange)}
+.fail-card .fd{font-size:12px;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums;word-break:break-all}
+.fail-card .fm{margin-left:auto;text-align:right;font-size:11px;color:var(--ink3);white-space:nowrap}
+
+.wall{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:30px}
+.wall.hidden{display:none}
+.wall-card{max-width:430px;width:100%;background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;
+  padding:34px 32px;text-align:center;box-shadow:0 30px 70px -25px rgba(0,9,44,.3)}
+.wall-card .lock{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--azure),var(--purple));font-size:24px}
+.wall-card h3{font-size:20px;font-weight:700}
+.wall-card p{font-size:13.5px;color:var(--ink2);margin:8px 0 22px}
+.wall-card .row{display:flex;flex-direction:column;gap:11px}
+.wall-card .inp{text-align:left}
+.wall-card .or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:11px;margin:16px 0;text-transform:uppercase;letter-spacing:1px}
+.wall-card .or::before,.wall-card .or::after{content:"";flex:1;height:1px;background:var(--border)}
+.sso{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13.5px;font-weight:600;
+  background:var(--surface);color:var(--navy);border:1px solid var(--border-strong);border-radius:10px;padding:12px;cursor:pointer;width:100%;transition:.16s}
+.sso:hover{border-color:var(--azure);background:rgba(0,45,222,.04)}
+.wall-card small{display:block;color:var(--ink3);font-size:11px;margin-top:16px}
+
+.export-bar{display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:15px 18px;margin-bottom:22px;
+  background:rgba(0,45,222,.04);border:1px solid rgba(0,45,222,.18);border-radius:12px}
+.export-bar .et{font-size:13px;font-weight:600}
+.export-bar .et small{display:block;color:var(--ink2);font-size:11.5px;font-weight:400}
+.export-bar .spacer{flex:1}
+.exp-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--navy);
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:9px;padding:9px 14px;cursor:pointer;transition:.16s}
+.exp-btn:hover{border-color:var(--teal);color:var(--teal)}
+.signed-badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--teal);
+  background:rgba(46,196,182,.12);border:1px solid rgba(46,196,182,.35);padding:6px 13px;border-radius:100px}
+
+.meta-strip{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.meta-strip .m{font-size:11.5px;color:var(--ink2);background:var(--subtle);border:1px solid var(--border);padding:6px 12px;border-radius:8px}
+.meta-strip .m b{color:var(--navy);font-weight:600}
+
+/* upload / OR divider */
+.or-div{display:flex;align-items:center;gap:14px;margin:26px 0;color:var(--ink3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px}
+.or-div::before,.or-div::after{content:"";flex:1;height:1px;background:var(--border)}
+.upload-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.upload-head .ut{font-size:14px;font-weight:700}
+.upload-head .us{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.sample-link{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--azure);
+  background:rgba(0,45,222,.07);border:1px solid rgba(0,45,222,.2);border-radius:9px;padding:8px 13px;cursor:pointer;transition:.16s;white-space:nowrap}
+.sample-link:hover{background:rgba(0,45,222,.12)}
+.drop{border:1.5px dashed var(--border-strong);border-radius:12px;padding:26px 22px;text-align:center;cursor:pointer;transition:.16s;background:var(--subtle)}
+.drop:hover,.drop.drag{border-color:var(--azure);background:rgba(0,45,222,.04)}
+.drop .di{font-size:26px}
+.drop .dt{font-size:13.5px;font-weight:600;margin-top:8px}
+.drop .dt b{color:var(--azure)}
+.drop .dh{font-size:11.5px;color:var(--ink3);margin-top:4px}
+.file-pill{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid rgba(46,196,182,.4);
+  background:rgba(46,196,182,.07);border-radius:11px;margin-top:8px}
+.file-pill .fi{font-size:20px}
+.file-pill .fn{font-size:13px;font-weight:700}
+.file-pill .fm{font-size:11.5px;color:var(--ink2);margin-top:2px}
+.file-pill .fx{margin-left:auto;cursor:pointer;color:var(--ink3);font-size:18px;line-height:1;padding:4px}
+.file-pill .fx:hover{color:var(--orange)}
+.file-err{font-size:12px;color:var(--orange);font-weight:600;margin-top:8px}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
+    <div class="brand"><span class="dot"></span>Mozark <small>DX · Service Reachability</small></div>
+    <button class="home-btn" onclick="location.reload()">Back to dashboard</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="eyebrow">Test your own app</span>
+    <h1>Don't see your app in our list?<br><span class="g">Run it through the same tests.</span></h1>
+    <p>Point us at any app's URL and pick the country to test from. We'll discover its real endpoints, run reachability and latency tests, and build you the exact same Service Access report — waterfall diagnostics, HTTP causes, and packet &amp; ping detail — that you see across our benchmarked brands.</p>
+  </div>
+
+  <!-- STEPPER -->
+  <div class="stepper">
+    <div class="st active" id="step-1"><span class="n">1</span>Configure test</div>
+    <div class="st" id="step-2"><span class="n">2</span>Discover endpoints</div>
+    <div class="st" id="step-3"><span class="n">3</span>Run tests</div>
+    <div class="st" id="step-4"><span class="n">4</span>Report &amp; export</div>
+  </div>
+
+  <!-- PANEL 1 CONFIGURE -->
+  <div class="panel" id="panel-1">
+    <div class="p-head">
+      <h2>Configure your test</h2>
+      <div class="sub">One app, one country at a time. Let us discover the endpoints, or upload your own list. We use the same input schema as our benchmarked catalog.</div>
+    </div>
+
+    <div class="fgrid">
+      <div class="field">
+        <label>App / source URL <span class="req">*</span> <span class="hint">the public root URL of the app you want tested</span></label>
+        <div class="with-prefix">
+          <span class="pfx">https://</span>
+          <input class="inp" id="f-url" placeholder="myapp.com" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Country <span class="req">*</span> <span class="hint">where we test from</span></label>
+        <select class="sel" id="f-country">
+          <option value="">Select country…</option>
+          <option data-c="IN" data-city="Mumbai">India</option>
+          <option data-c="AU" data-city="Sydney">Australia</option>
+          <option data-c="SG" data-city="Singapore">Singapore</option>
+          <option data-c="AE" data-city="Dubai">United Arab Emirates</option>
+          <option data-c="GB" data-city="London">United Kingdom</option>
+          <option data-c="US" data-city="Virginia">United States</option>
+          <option data-c="ES" data-city="Madrid">Spain</option>
+          <option data-c="DE" data-city="Frankfurt">Germany</option>
+          <option data-c="BR" data-city="São Paulo">Brazil</option>
+          <option data-c="JP" data-city="Tokyo">Japan</option>
+          <option data-c="FR" data-city="Paris">France</option>
+          <option data-c="MX" data-city="Mexico City">Mexico</option>
+          <option data-c="MA" data-city="Casablanca">Morocco</option>
+          <option data-c="ZA" data-city="Johannesburg">South Africa</option>
+          <option data-c="NG" data-city="Lagos">Nigeria</option>
+          <option data-c="KE" data-city="Nairobi">Kenya</option>
+          <option data-c="EG" data-city="Cairo">Egypt</option>
+          <option data-c="SA" data-city="Riyadh">Saudi Arabia</option>
+          <option data-c="TH" data-city="Bangkok">Thailand</option>
+          <option data-c="ID" data-city="Jakarta">Indonesia</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Benchmark category <span class="req">*</span></label>
+        <select class="sel" id="f-cat">
+          <option value="">Select category…</option>
+          <option>AI Apps</option>
+          <option>Work / Collaboration SaaS</option>
+          <option>Developer / IT SaaS</option>
+          <option>Commerce / Food / Mobility</option>
+          <option>Fantasy Sports / Sports Betting</option>
+          <option>Banking / Payments</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Endpoint types <span class="hint">which types to discover — every matching URL is returned, none are filtered out</span></label>
+        <div class="type-select">
+          <button type="button" class="type-btn" id="f-types-btn" onclick="toggleTypesPanel()">
+            <span id="f-types-label">All types</span><span>▾</span>
+          </button>
+          <div class="type-panel hidden" id="f-types-panel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="or-div">or upload your own endpoints</div>
+
+    <div class="upload-head">
+      <div>
+        <div class="ut">Have your own endpoint list?</div>
+        <div class="us">Upload a CSV of the exact endpoints you want tested we'll skip discovery and run your list directly.</div>
+      </div>
+      <button class="sample-link" onclick="downloadSample()">Download sample CSV</button>
+    </div>
+
+    <div class="drop" id="drop" onclick="document.getElementById('f-file').click()">
+      <input type="file" id="f-file" accept=".csv" hidden>
+      <div class="di"></div>
+      <div class="dt">Drop your CSV here or <b>browse</b></div>
+      <div class="dh">Columns: country, benchmark_category, recommended_brand_app, source_domain, endpoint_type, host, url</div>
+      <div class="dh" style="margin-top:2px">endpoint_type can be any label the 5 standard types or your own custom ones (e.g. websocket, graphql, webhook).</div>
+    </div>
+    <div id="file-state"></div>
+
+    <div class="actions">
+      <span class="spacer"></span>
+      <button class="cta" id="btn-discover" disabled onclick="startDiscovery()">Discover endpoints</button>
+      <button class="cta teal" id="btn-runfile" style="display:none" onclick="startRun()">Run my endpoints</button>
+    </div>
+  </div>
+
+  <!-- PANEL 2 DISCOVERY -->
+  <div class="panel hidden" id="panel-2">
+    <div class="p-head">
+      <h2>Endpoint discovery</h2>
+      <div class="sub">Our discovery script crawls your app and resolves every reachable endpoint by type.</div>
+    </div>
+
+    <div class="scan-head">
+      <div class="scan-ring">
+        <svg width="46" height="46"><circle cx="23" cy="23" r="19" fill="none" stroke="#E6E6E6" stroke-width="4"/>
+        <circle id="ring-fg" cx="23" cy="23" r="19" fill="none" stroke="#2EC4B6" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4"/></svg>
+        <span class="pct" id="ring-pct">0%</span>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:600" id="disc-status">Initializing crawler</div>
+        <div style="font-size:12px;color:var(--ink2)" id="disc-target"></div>
+      </div>
+    </div>
+
+    <div class="log" id="disc-log"></div>
+
+    <div id="disc-results" style="display:none">
+      <div class="ep-count" id="ep-count"></div>
+      <div style="overflow:auto;max-height:340px;border:1px solid var(--border);border-radius:10px;margin-top:6px">
+        <table class="ep-table">
+          <thead><tr><th>Type</th><th>Host</th><th>URL</th></tr></thead>
+          <tbody id="ep-tbody"></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button class="cta ghost" onclick="backTo(1)">Edit config</button>
+        <span class="spacer"></span>
+        <button class="cta ghost" onclick="openSelectionModal()">Select endpoints <span id="sel-count-badge"></span> ▾</button>
+        <button class="cta teal" id="btn-run-tests" disabled onclick="startRun()">Run reachability tests</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECTION MODAL: pick which discovered URLs to actually test -->
+  <div class="modal-overlay hidden" id="sel-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Select endpoints to test</h3>
+          <div class="sub">Every discovered URL is listed — pick which ones to run, or let AI pick the best per type for you.</div>
+        </div>
+        <span class="fx" style="cursor:pointer;font-size:18px" onclick="closeSelectionModal()">✕</span>
+      </div>
+      <div class="modal-toolbar">
+        <label><input type="checkbox" id="sel-all-cb" onchange="toggleSelectAllRows(this.checked)"> All (<span id="sel-all-count">0</span>)</label>
+        <button class="cta ghost" id="btn-ai-decide" onclick="runAiDecide()">✨ Let AI decide</button>
+      </div>
+      <div class="modal-body">
+        <table class="sel-table">
+          <thead><tr><th style="width:30px"></th><th>Type</th><th>Host</th><th>URL</th></tr></thead>
+          <tbody id="sel-tbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-foot">
+        <span class="spacer"></span>
+        <span id="sel-status" style="font-size:12.5px;color:var(--ink2);margin-right:auto"></span>
+        <button class="cta ghost" onclick="closeSelectionModal()">Cancel</button>
+        <button class="cta teal" onclick="confirmSelection()">Confirm selection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3 RUN -->
+  <div class="panel hidden" id="panel-3">
+    <div class="p-head">
+      <h2>Running tests</h2>
+      <div class="sub">We measure DNS, TCP, TLS, TTFB, download, HTTP status, packet loss and ping for each endpoint.</div>
+    </div>
+    <div class="scan-head">
+      <div class="scan-ring">
+        <svg width="46" height="46"><circle cx="23" cy="23" r="19" fill="none" stroke="#E6E6E6" stroke-width="4"/>
+        <circle id="ring2-fg" cx="23" cy="23" r="19" fill="none" stroke="#9672F8" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4"/></svg>
+        <span class="pct" id="ring2-pct">0%</span>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:600" id="run-status">Starting tests</div>
+        <div style="font-size:12px;color:var(--ink2)" id="run-target"></div>
+      </div>
+    </div>
+    <div class="log" id="run-log"></div>
+  </div>
+
+  <!-- PANEL 4 REPORT -->
+  <div class="panel hidden" id="panel-4" style="padding:0;overflow:hidden">
+    <div class="dash locked" id="dash">
+
+      <!-- SIGN-IN WALL -->
+      <div class="wall" id="wall">
+        <div class="wall-card">
+          <div class="lock"></div>
+          <h3>Your report is ready</h3>
+          <p>We've finished testing <b id="wall-app">your app</b>. Sign in to unlock the full Service Access report waterfall diagnostics, HTTP causes, packet &amp; ping detail, per-endpoint drill-in, failure logs and the raw data explorer — and export it as Excel, PDF or Word.</p>
+          <div class="row">
+            <input class="inp" placeholder="Work email" id="wall-email">
+            <button class="cta" style="justify-content:center;width:100%" onclick="signIn()">Unlock report</button>
+          </div>
+          <div class="or">or</div>
+          <button class="sso" onclick="signIn()">
+            <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.7-.06-1.4-.18-2.06H12v3.9h5.9a5 5 0 0 1-2.2 3.3v2.7h3.56c2.08-1.92 3.28-4.74 3.28-8.04z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.28-1.93-6.15-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.85 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.2 1.64l3.15-3.15A11 11 0 0 0 12 1 11 11 0 0 0 2.18 7.06l3.67 2.84C6.72 7.3 9.14 5.38 12 5.38z"/></svg>
+            Continue with Google
+          </button>
+          <small>Tests run anonymously. Results are held privately and only released to your account after sign-in.</small>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="dash-inner" style="padding:30px">
+
+        <div class="export-bar" id="export-bar" style="display:none">
+          <span class="signed-badge">Signed in</span>
+          <div class="et">Service Access report <span id="exp-app"></span><small id="exp-meta"></small></div>
+          <span class="spacer"></span>
+          <button class="exp-btn" onclick="doExport('Excel')">Export Excel</button>
+          <button class="exp-btn" onclick="doExport('PDF')">Export PDF</button>
+          <button class="exp-btn" onclick="doExport('Word')">Export Word</button>
+        </div>
+
+        <div class="p-head">
+          <h2 id="rep-title">Service Access Live Report</h2>
+          <div class="sub">Full endpoint reachability, latency, waterfall, HTTP causes and packet &amp; ping detail for your tested app.</div>
+        </div>
+
+        <div class="meta-strip" id="meta-strip"></div>
+
+        <div class="kpi-grid" id="kpi-grid"></div>
+
+        <!-- WATERFALL -->
+        <div class="dash-sec">
+          <h3><span class="ic"></span>Waterfall diagnostics connection breakdown by endpoint</h3>
+          <div class="card">
+            <div class="wf-legend" id="wf-legend"></div>
+            <div id="wf-rows"></div>
+          </div>
+        </div>
+
+        <!-- HTTP CAUSES + LATENCY BY TYPE -->
+        <div class="split">
+          <div class="dash-sec">
+            <h3><span class="ic"></span>HTTP status causes</h3>
+            <div class="card split-3">
+              <svg id="donut" width="140" height="140" viewBox="0 0 140 140"></svg>
+              <div class="donut-legend" id="donut-legend"></div>
+            </div>
+          </div>
+          <div class="dash-sec">
+            <h3><span class="ic"></span>Avg HTTP total by endpoint type</h3>
+            <div class="card"><div class="bars" id="bars-latency"></div></div>
+          </div>
+        </div>
+
+        <!-- PACKET & PING -->
+        <div class="dash-sec">
+          <h3><span class="ic"></span>Packet &amp; ping detail</h3>
+          <div class="card">
+            <div class="pp-grid" id="pp-grid"></div>
+            <div style="margin-top:18px"><div class="bars" id="bars-ping"></div></div>
+          </div>
+        </div>
+
+        <!-- DRILL-IN -->
+        <div class="dash-sec">
+          <h3><span class="ic"></span>Endpoint drill-in</h3>
+          <div class="card">
+            <div class="drill-head">
+              <span class="drill-sel">Endpoint type:</span>
+              <select class="sel" id="drill-ep" style="width:auto;min-width:200px" onchange="renderDrill()"></select>
+              <div class="tabs" style="margin-left:auto">
+                <div class="tab on" data-d="waterfall" onclick="drillTab('waterfall')">Waterfall</div>
+                <div class="tab" data-d="packet" onclick="drillTab('packet')">Packet &amp; ping</div>
+                <div class="tab" data-d="breakdown" onclick="drillTab('breakdown')">HTTP breakdown</div>
+              </div>
+            </div>
+            <div id="drill-body"></div>
+          </div>
+        </div>
+
+        <!-- LOGS EXPLORER -->
+        <div class="dash-sec">
+          <h3><span class="ic"></span>Logs explorer</h3>
+          <div class="tabs" style="margin-bottom:14px">
+            <div class="tab on" data-t="raw" onclick="switchTab('raw')">Raw logs</div>
+            <div class="tab" data-t="fail" onclick="switchTab('fail')">Failure logs <span class="b" id="fail-badge">0</span></div>
+          </div>
+          <div class="tabview on" id="tv-raw">
+            <div class="raw-wrap">
+              <table class="raw-table">
+                <thead><tr>
+                  <th>Time (UTC)</th><th>Type</th><th>Host</th><th>Status</th>
+                  <th>DNS</th><th>TCP</th><th>TLS</th><th>TTFB</th><th>Download</th><th>HTTP Total</th>
+                  <th>Sent</th><th>Recv</th><th>Loss%</th><th>Ping Avg</th><th>Jitter</th><th>Eff. lat</th>
+                </tr></thead>
+                <tbody id="raw-tbody"></tbody>
+              </table>
+            </div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:8px">All measured rows for this test run · same schema as the benchmarked catalog export.</div>
+          </div>
+          <div class="tabview" id="tv-fail"><div id="fail-list"></div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_BASE = '';
+const S = { url:'', country:'', cc:'', city:'', cat:'', types:['all'], endpoints:[], selected:[], selectionConfirmed:false, rows:[], signedIn:false, uploaded:false, drill:{ep:null,tab:'waterfall'} };
+const $ = id => document.getElementById(id);
+
+const SEGS=[
+  {l:'DNS',k:'dns',c:'#F5B82C',tip:'Resolve domain to IP'},
+  {l:'TCP',k:'tcp',c:'#2EC4B6',tip:'Establish TCP connection'},
+  {l:'TLS',k:'tls',c:'#002DDE',tip:'Complete TLS handshake'},
+  {l:'TTFB',k:'ttfb',c:'#9672F8',tip:'Request sent to first byte'},
+  {l:'Download',k:'download',c:'#F38BA8',tip:'Receive full response body'}
+];
+const LIGHTSEG={DNS:1,TCP:1,Download:1}; // dark text on light segments
+
+const EP_TYPES=[
+  {key:'main_page',label:'Main page',color:'#2D5BFF'},
+  {key:'authentication_endpoint',label:'Auth endpoint',color:'#E63976'},
+  {key:'payment_checkout',label:'Payment/checkout',color:'#12B76A'},
+  {key:'search_endpoint',label:'Search endpoint',color:'#F5A623'},
+  {key:'third_party_search',label:'3rd-party search',color:'#D4A017'},
+  {key:'waf_challenge',label:'WAF/challenge',color:'#D92D20'},
+  {key:'static_cdn_asset',label:'Static CDN asset',color:'#15B8A6'},
+  {key:'image',label:'Image',color:'#0EA5E9'},
+  {key:'static_asset',label:'Static asset',color:'#2563EB'},
+  {key:'api_endpoint',label:'API endpoint',color:'#7C4DFF'},
+  {key:'feature_flag',label:'Feature flag',color:'#9B59B6'},
+  {key:'consent_management',label:'Consent mgmt',color:'#6B7280'},
+  {key:'rum_telemetry',label:'RUM telemetry',color:'#06B6D4'},
+  {key:'affiliate_referral',label:'Affiliate/referral',color:'#EA580C'},
+  {key:'analytics_tracking',label:'Analytics/tracking',color:'#A78BFA'},
+  {key:'ad_endpoint',label:'Ad endpoint',color:'#FB7185'},
+  {key:'localization_currency',label:'Locale/currency',color:'#4F46E5'}
+];
+const STD_TYPES=EP_TYPES.map(t=>t.key);
+const labelOf=ty=>{const s=EP_TYPES.find(t=>t.key===ty);return s?s.label:ty;};
+const colorFor=ty=>{const s=EP_TYPES.find(t=>t.key===ty);return s?s.color:'#5A6075';};
+function hexToRgba(hex,a){const h=hex.replace('#','');const r=parseInt(h.substring(0,2),16),g=parseInt(h.substring(2,4),16),b=parseInt(h.substring(4,6),16);return `rgba(${r},${g},${b},${a})`;}
+// works for both known types (colored per EP_TYPES) and genuinely custom/uploaded labels (neutral gray)
+function tagHTML(ty,extraStyle=''){
+  const color=colorFor(ty),label=labelOf(ty);
+  return `<span class="tag" style="background:${hexToRgba(color,.14)};color:${color};border:1px solid ${hexToRgba(color,.35)};${extraStyle}">${label}</span>`;
+}
+// types actually present in a result set, standard first (in canonical order) then custom (as-seen)
+function activeTypes(rows){
+  const present=[...new Set(rows.map(r=>r.type))];
+  const std=STD_TYPES.filter(t=>present.includes(t));
+  const custom=present.filter(t=>!STD_TYPES.includes(t));
+  return [...std,...custom];
+}
+
+/* ===== endpoint-type multi-select (4th config field) ===== */
+function renderTypesPanel(){
+  const panel=$('f-types-panel');
+  let html=`<label><input type="checkbox" id="ty-all" checked onchange="onAllTypesToggle(this.checked)"><b>All types</b></label><div class="tdiv"></div>`;
+  html+=EP_TYPES.map(t=>`<label><input type="checkbox" class="ty-cb" value="${t.key}" checked disabled onchange="onTypeToggle()">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${t.color}"></span> ${t.label}</label>`).join('');
+  panel.innerHTML=html;
+}
+function toggleTypesPanel(){$('f-types-panel').classList.toggle('hidden');}
+function onAllTypesToggle(checked){
+  document.querySelectorAll('.ty-cb').forEach(cb=>{cb.disabled=checked;cb.checked=checked;});
+  if(checked){S.types=['all'];$('f-types-label').textContent='All types';validate();}
+  else{onTypeToggle();}
+}
+function onTypeToggle(){
+  const checked=[...document.querySelectorAll('.ty-cb:checked')].map(cb=>cb.value);
+  S.types=checked;
+  $('f-types-label').textContent=checked.length?`${checked.length} type${checked.length>1?'s':''} selected`:'Select types…';
+  validate();
+}
+document.addEventListener('click',e=>{
+  const sel=document.querySelector('.type-select');
+  if(sel&&!sel.contains(e.target))$('f-types-panel').classList.add('hidden');
+});
+renderTypesPanel();
+
+function validate(){
+  S.url=$('f-url').value.trim();
+  const o=$('f-country').selectedOptions[0];
+  S.country=$('f-country').value; S.cc=o?o.dataset.c||'':''; S.city=o?o.dataset.city||'':'';
+  S.cat=$('f-cat').value;
+  if(S.uploaded){
+    $('btn-discover').style.display='none';
+    $('btn-runfile').style.display='inline-flex';
+    $('btn-runfile').disabled=!S.endpoints.length;
+  }else{
+    $('btn-discover').style.display='inline-flex';
+    $('btn-runfile').style.display='none';
+    $('btn-discover').disabled=!(S.url&&S.country&&S.cat&&S.types.length);
+  }
+}
+['f-url','f-country','f-cat'].forEach(id=>{$(id).addEventListener('input',validate);$(id).addEventListener('change',validate);});
+
+/* ===== sample CSV download ===== */
+function downloadSample(){
+  const headers=['country','benchmark_category','recommended_brand_app','source_domain','endpoint_type','host','url'];
+  const sample=[
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','main_page','myapp.com','https://myapp.com'],
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','main_page','myapp.com','https://myapp.com/'],
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','authentication_endpoint','api.myapp.com','https://api.myapp.com/v2/auth/login'],
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','api_endpoint','api.myapp.com','https://api.myapp.com/v2/session/init'],
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','search_endpoint','api.myapp.com','https://api.myapp.com/v2/search?q=&limit=20'],
+    ['India','Developer / IT SaaS','MyApp','https://myapp.com','static_cdn_asset','assets.myapp.com','https://assets.myapp.com/app.bundle.min.js']
+  ];
+  const csv=[headers,...sample].map(r=>r.map(c=>/[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='mozark_endpoints_sample.csv';a.click();
+}
+
+/* ===== CSV upload ===== */
+const STD_TYPE_SET=STD_TYPES;
+function suggestType(t){ // non-blocking typo nudge against standard types
+  const near={auth_endpoint:'authentication_endpoint',auth:'authentication_endpoint',login_endpoint:'authentication_endpoint',
+    cdn_asset:'static_cdn_asset',static_asset:'static_cdn_asset',cdn:'static_cdn_asset',
+    api:'api_endpoint',search:'search_endpoint',home:'main_page',homepage:'main_page',main:'main_page'};
+  return near[t]||null;
+}
+function parseCSVLine(line){
+  const out=[];let cur='',q=false;
+  for(let i=0;i<line.length;i++){const ch=line[i];
+    if(q){if(ch==='"'){if(line[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else{if(ch==='"')q=true;else if(ch===',')(out.push(cur),cur='');else cur+=ch;}}
+  out.push(cur);return out.map(s=>s.trim());
+}
+function handleFile(file){
+  $('file-state').innerHTML='';S.uploaded=false;S.endpoints=[];
+  if(!file){validate();return;}
+  if(!/\.csv$/i.test(file.name)){fileError('Please upload a .csv file.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const text=e.target.result.replace(/\r/g,'');
+      const lines=text.split('\n').filter(l=>l.trim());
+      if(lines.length<2){fileError('File looks empty — needs a header row and at least one endpoint.');return;}
+      const hdr=parseCSVLine(lines[0]).map(h=>h.toLowerCase());
+      const need=['country','benchmark_category','source_domain','endpoint_type','host','url'];
+      const missing=need.filter(c=>!hdr.includes(c));
+      if(missing.length){fileError('Missing required column(s): '+missing.join(', '));return;}
+      const idx={};hdr.forEach((h,i)=>idx[h]=i);
+      const eps=[];let skipped=0;const customTypes=new Set();const nudges=new Set();
+      for(let i=1;i<lines.length;i++){
+        const c=parseCSVLine(lines[i]);
+        if(c.length<hdr.length||!c[idx.url]){skipped++;continue;}   // skip ONLY malformed rows
+        const type=(c[idx.endpoint_type]||'').toLowerCase().trim()||'untyped';
+        if(!STD_TYPE_SET.includes(type)){customTypes.add(type);const s=suggestType(type);if(s)nudges.add(`${type} → ${s}?`);}
+        eps.push({
+          type, host:c[idx.host]||host(c[idx.url]), url:c[idx.url],
+          source_domain:c[idx.source_domain]||c[idx.url],
+          country:c[idx.country], benchmark_category:c[idx.benchmark_category],
+          recommended_brand_app:c[idx.recommended_brand_app]||''
+        });
+      }
+      if(!eps.length){fileError('No testable rows found — every row is missing a url.');return;}
+      // adopt metadata from first row
+      S.endpoints=eps;S.uploaded=true;
+      S.country=eps[0].country||'Uploaded';S.cat=eps[0].benchmark_category||'Uploaded';
+      S.city='';S.url=host(eps[0].url);
+      const byType={};eps.forEach(x=>byType[x.type]=(byType[x.type]||0)+1);
+      const order=[...STD_TYPE_SET.filter(t=>byType[t]),...[...customTypes]];
+      const summary=order.map(t=>`${byType[t]} ${t}${STD_TYPE_SET.includes(t)?'':' (custom)'}`).join(' · ');
+      const extra=[
+        customTypes.size?`<span style="color:var(--ink2)">${customTypes.size} custom type${customTypes.size>1?'s':''} accepted</span>`:'',
+        skipped?`<span style="color:var(--orange)">${skipped} malformed row${skipped>1?'s':''} skipped (no url)</span>`:'',
+        nudges.size?`<span style="color:var(--ink3)">did you mean: ${[...nudges].join(', ')}</span>`:''
+      ].filter(Boolean).join(' · ');
+      $('file-state').innerHTML=`<div class="file-pill"><span class="fi">✓</span>
+        <div><div class="fn">${file.name}</div><div class="fm">${eps.length} endpoints · ${summary}${extra?' · '+extra:''}</div></div>
+        <span class="fx" onclick="clearFile()" title="Remove">Ã</span></div>`;
+      validate();
+    }catch(err){fileError('Could not read this file. Please check the format.');}
+  };
+  reader.readAsText(file);
+}
+function fileError(msg){$('file-state').innerHTML=`<div class="file-err">⚠️ ${msg}</div>`;S.uploaded=false;S.endpoints=[];validate();}
+function clearFile(){$('f-file').value='';$('file-state').innerHTML='';S.uploaded=false;S.endpoints=[];validate();}
+$('f-file').addEventListener('change',e=>handleFile(e.target.files[0]));
+(function(){const d=$('drop');
+  ['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag');}));
+  d.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f){$('f-file').files=e.dataTransfer.files;handleFile(f);}});
+})();
+
+function setStep(n){for(let i=1;i<=4;i++){const el=$('step-'+i);el.classList.remove('active','done');if(i<n)el.classList.add('done');else if(i===n)el.classList.add('active');}}
+function show(n){for(let i=1;i<=4;i++)$('panel-'+i).classList.toggle('hidden',i!==n);setStep(n);window.scrollTo({top:0,behavior:'smooth'});}
+function backTo(n){show(n);}
+function logLine(elId,html){const el=$(elId);const t=new Date().toLocaleTimeString('en-GB',{hour12:false});el.innerHTML+=`<div><span class="ts">[${t}]</span> ${html}</div>`;el.scrollTop=el.scrollHeight;}
+function host(u){try{return new URL(u.startsWith('http')?u:'https://'+u).hostname;}catch{return u;}}
+
+/* ===== live backend calls ===== */
+async function apiPost(path,payload){
+  const res=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error||`Request to ${path} failed (${res.status})`);
+  return data;
+}
+
+// cosmetic progress ticker while we wait on the real (slow) backend call
+function startTicker(elId,ringId,pctId,statusId,messages,doneLabel){
+  let i=0;
+  logLine(elId,`<span class="info">▸</span> ${messages[0]}`);
+  const timer=setInterval(()=>{
+    i=(i+1)%messages.length;
+    logLine(elId,`<span class="info">▸</span> ${messages[i]}`);
+    const pct=Math.min(92,10+i*(80/messages.length));
+    if(pctId){$(pctId).textContent=Math.round(pct)+'%';}
+    if(ringId){$(ringId).style.strokeDashoffset=119.4*(1-pct/100);}
+  },1400);
+  return {
+    stop(finalMsg,ok=true){
+      clearInterval(timer);
+      logLine(elId,`<span class="${ok?'ok':'errc'}">${ok?'✓':'✗'}</span> ${finalMsg||doneLabel}`);
+      if(pctId)$(pctId).textContent='100%';
+      if(ringId)$(ringId).style.strokeDashoffset=0;
+      if(statusId)$(statusId).textContent=ok?doneLabel:'Failed';
+    }
+  };
+}
+
+async function startDiscovery(){
+  show(2);$('disc-log').innerHTML='';$('disc-results').style.display='none';
+  $('disc-target').textContent=`https://${S.url.replace(/^https?:\/\//,'')} · ${S.cat} · tested from ${S.country}${S.city?' · '+S.city:''}`;
+  $('disc-status').textContent='Crawling…';
+  // reset selection state — every new discovery needs a fresh confirm before Run unlocks
+  S.selected=[];S.selectionConfirmed=false;
+  $('btn-run-tests').disabled=true;$('sel-count-badge').textContent='';
+  const ticker=startTicker('disc-log','ring-fg','ring-pct','disc-status',[
+    'Opening a real browser and loading the homepage…',
+    'Dismissing cookie / language / age gates…',
+    'Attempting login to surface auth endpoints…',
+    'Running a live search to surface search endpoints…',
+    'Classifying every endpoint seen — nothing filtered out…'
+  ],'Discovery complete');
+  try{
+    const types=S.types.includes('all')?[]:S.types;
+    const data=await apiPost('/api/discover',{url:S.url,country:S.country,category:S.cat,types});
+    ticker.stop(`${data.endpoints.length} endpoints discovered`,true);
+    S.endpoints=data.endpoints;
+    renderEndpoints(S.endpoints);
+  }catch(err){
+    ticker.stop(`Discovery failed: ${err.message}`,false);
+  }
+}
+
+function renderEndpoints(eps){
+  const counts={};eps.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);
+  const types=activeTypes(eps); // only types actually present, standard first then custom
+  $('ep-count').innerHTML=types.map(ty=>`<span class="c"><span class="d" style="background:${colorFor(ty)}"></span>${labelOf(ty)} <b>${counts[ty]||0}</b></span>`).join('');
+  $('ep-tbody').innerHTML=eps.map(e=>`<tr><td>${tagHTML(e.type)}</td><td class="host-cell">${e.host}</td><td class="url-cell">${e.url}</td></tr>`).join('');
+  $('disc-results').style.display='block';
+  logLine('disc-log',`<span class="ok">✓</span> <span class="ep">${eps.length}</span> endpoints ready to test across <span class="ep">${types.length}</span> types`);
+}
+
+/* ===== select-which-URLs-to-test modal ===== */
+function rowKey(e){return `${e.type}|${e.host}|${e.url}`;}
+
+function openSelectionModal(){
+  $('sel-status').textContent='';
+  // before any confirm, default to everything checked; after a confirm, restore exactly what was confirmed
+  const priorKeys=new Set((S.selected.length?S.selected:S.endpoints).map(rowKey));
+  $('sel-all-count').textContent=S.endpoints.length;
+  $('sel-tbody').innerHTML=S.endpoints.map((e,i)=>{
+    const checked=priorKeys.has(rowKey(e));
+    return `<tr><td><input type="checkbox" class="sel-cb" data-i="${i}" ${checked?'checked':''} onchange="onSelRowToggle()"></td>
+      <td>${tagHTML(e.type)}</td><td class="host-cell">${e.host}</td><td class="url-cell">${e.url}</td></tr>`;
+  }).join('');
+  onSelRowToggle();
+  $('sel-modal').classList.remove('hidden');
+}
+function closeSelectionModal(){$('sel-modal').classList.add('hidden');}
+function toggleSelectAllRows(checked){
+  document.querySelectorAll('.sel-cb').forEach(cb=>cb.checked=checked);
+}
+function onSelRowToggle(){
+  const boxes=[...document.querySelectorAll('.sel-cb')];
+  const n=boxes.filter(cb=>cb.checked).length;
+  $('sel-all-cb').checked=n>0&&n===boxes.length;
+}
+async function runAiDecide(){
+  $('sel-status').textContent='Asking AI to pick the best per type…';
+  $('btn-ai-decide').disabled=true;
+  try{
+    const data=await apiPost('/api/select-best',{rows:S.endpoints});
+    const keep=new Set(data.endpoints.map(rowKey));
+    document.querySelectorAll('.sel-cb').forEach((cb,i)=>{cb.checked=keep.has(rowKey(S.endpoints[i]));});
+    onSelRowToggle();
+    $('sel-status').textContent=`AI selected ${data.endpoints.length} of ${S.endpoints.length} — review below, then Confirm.`;
+  }catch(err){
+    $('sel-status').textContent=`AI selection failed: ${err.message}`;
+  }
+  $('btn-ai-decide').disabled=false;
+}
+function confirmSelection(){
+  const boxes=[...document.querySelectorAll('.sel-cb')];
+  S.selected=boxes.filter(cb=>cb.checked).map(cb=>S.endpoints[+cb.dataset.i]);
+  S.selectionConfirmed=S.selected.length>0;
+  $('sel-count-badge').textContent=S.selected.length?`(${S.selected.length})`:'';
+  $('btn-run-tests').disabled=!S.selectionConfirmed;
+  closeSelectionModal();
+}
+
+async function startRun(){
+  if(S.uploaded){$('step-2').classList.remove('active');$('step-2').classList.add('done');}
+  const testSet=S.uploaded?S.endpoints:S.selected; // discovery flow only runs the user-confirmed subset
+  show(3);$('run-log').innerHTML='';
+  $('run-target').textContent=`${testSet.length} endpoints${S.uploaded?' (from your CSV)':''} · tested from ${S.country}${S.city?' · '+S.city:''}`;
+  $('run-status').textContent='Testing…';
+  const ticker=startTicker('run-log','ring2-fg','ring2-pct','run-status',[
+    `Sending ${testSet.length} endpoints to Globalping probes in ${S.country}…`,
+    'Running ping (ICMP) measurements per endpoint…',
+    'Running HTTP measurements per endpoint…',
+    'Merging ping + HTTP results by probe…'
+  ],'All tests complete');
+
+  const payload=testSet.map(e=>({
+    country:e.country||S.country, source_domain:e.source_domain||e.url,
+    endpoint_type:e.type, host:e.host, url:e.url
+  }));
+
+  try{
+    const data=await apiPost('/api/measure',{rows:payload});
+    const measured=(data.results||[]).map(r=>({...r,ts:new Date(r.ts)}));
+    const failed=(data.failures||[]).map(f=>({
+      ts:new Date(), type:f.Endpoint_Type||'unknown', host:host(f.URL||f.url||''), url:f.URL||f.url||'',
+      status:null, success:'N', dns:0,tcp:0,tls:0,ttfb:0,download:0,total:0,
+      sent:0,recv:0,dropped:0,loss:100,pMin:null,pAvg:null,pMax:null,jitter:null,eff:0,latType:'',
+      errorMessage:f.Error_Message||''
+    }));
+    if(!measured.length&&!failed.length){
+      throw new Error('Server returned no results for any endpoint — likely a Globalping outage or rate limit. Try again in a moment.');
+    }
+    S.rows=[...measured,...failed];
+    ticker.stop(`${measured.length} measured, ${failed.length} failed before measurement`,true);
+    setTimeout(()=>{buildReport();show(4);},400);
+  }catch(err){
+    ticker.stop(`Test run failed: ${err.message}`,false);
+  }
+}
+
+function avg(a){a=a.filter(x=>x!=null);return a.length?a.reduce((s,x)=>s+x,0)/a.length:0;}
+// like avg(), but returns null (not 0) when every value is missing — lets callers
+// tell "genuinely measured near-zero" apart from "no valid data at all"
+function avgOrNull(a){a=a.filter(x=>x!=null);return a.length?a.reduce((s,x)=>s+x,0)/a.length:null;}
+function segAvg(rows){const o={};SEGS.forEach(s=>o[s.k]=avgOrNull(rows.map(r=>r[s.k])));o.total=avgOrNull(rows.map(r=>r.total));return o;}
+
+function buildReport(){
+  const R=S.rows;
+  const okRows=R.filter(r=>r.success==='Y');
+  const reach=R.length?okRows.length/R.length*100:0;
+  const failRows=R.filter(r=>r.success==='N');
+  const avgTotal=avg(R.map(r=>r.total));
+  const avgTTFB=avg(R.map(r=>r.ttfb));
+  const avgHand=avg(R.map(r=>r.dns+r.tcp+r.tls));
+  const avgLoss=avg(R.map(r=>r.loss));
+
+  $('wall-app').textContent=host(S.url);
+  $('rep-title').textContent=`Service Access — ${host(S.url)}`;
+
+  $('meta-strip').innerHTML=[
+    ['App',host(S.url)],['Country',S.country],['Test city',S.city||'-'],['Category',S.cat],
+    ['Endpoints',S.endpoints.length],['Run',new Date().toISOString().slice(0,16).replace('T',' ')+' UTC']
+  ].map(([k,v])=>`<span class="m"><b>${k}:</b> ${v}</span>`).join('');
+
+  $('kpi-grid').innerHTML=`
+    <div class="kpi b1"><div class="lab">Reachability</div><div class="val">${reach.toFixed(1)}<span class="u">%</span></div><div class="sub">${okRows.length}/${R.length} OK</div></div>
+    <div class="kpi b2"><div class="lab">Avg page load</div><div class="val">${Math.round(avgTotal)}<span class="u">ms</span></div><div class="sub">HTTP total</div></div>
+    <div class="kpi b3"><div class="lab">Avg TTFB</div><div class="val">${Math.round(avgTTFB)}<span class="u">ms</span></div><div class="sub">first byte</div></div>
+    <div class="kpi b4"><div class="lab">Avg handshake</div><div class="val">${Math.round(avgHand)}<span class="u">ms</span></div><div class="sub">DNS+TCP+TLS</div></div>
+    <div class="kpi b5"><div class="lab">Avg packet loss</div><div class="val">${avgLoss.toFixed(1)}<span class="u">%</span></div><div class="sub">${failRows.length} failures</div></div>`;
+
+  // waterfall legend
+  $('wf-legend').innerHTML=SEGS.map(s=>`<span><i style="background:${s.c}"></i>${s.l}</span>`).join('');
+  // waterfall per endpoint type (standard + custom, in order)
+  $('wf-rows').innerHTML=activeTypes(R).map(ty=>{
+    const rows=R.filter(r=>r.type===ty);if(!rows.length)return'';
+    return wfRow(labelOf(ty), segAvg(rows));
+  }).join('');
+
+  // HTTP causes donut
+  renderDonut(R);
+
+  // avg HTTP total by type
+  const byType=activeTypes(R).map(ty=>({label:labelOf(ty),v:avg(R.filter(r=>r.type===ty).map(r=>r.total))})).filter(x=>x.v>0);
+  const maxLat=Math.max(...byType.map(x=>x.v),1);
+  $('bars-latency').innerHTML=byType.map(x=>barRow(x.label,x.v/maxLat*100,Math.round(x.v)+'ms','var(--azure)')).join('');
+
+  // packet & ping
+  const pingRows=R.filter(r=>r.pAvg!=null);
+  const tSent=R.reduce((s,r)=>s+r.sent,0),tRecv=R.reduce((s,r)=>s+r.recv,0),tDrop=tSent-tRecv;
+  $('pp-grid').innerHTML=[
+    ['Packets sent',tSent,''],['Packets received',tRecv,''],['Packets dropped',tDrop,''],
+    ['Avg packet loss',avgLoss.toFixed(1),'%'],['Avg ping',avg(pingRows.map(r=>r.pAvg)).toFixed(1),'ms'],
+    ['Avg jitter',avg(pingRows.map(r=>r.jitter)).toFixed(2),'ms'],
+    ['Min ping',(pingRows.length?Math.min(...pingRows.map(r=>r.pMin)):0).toFixed(1),'ms'],
+    ['Max ping',(pingRows.length?Math.max(...pingRows.map(r=>r.pMax)):0).toFixed(1),'ms']
+  ].map(([l,v,u])=>`<div class="pp"><div class="l">${l}</div><div class="v">${v}<span class="u"> ${u}</span></div></div>`).join('');
+  const byTypePing=activeTypes(R).map(ty=>({label:labelOf(ty),v:avg(R.filter(r=>r.type===ty&&r.pAvg!=null).map(r=>r.pAvg))})).filter(x=>x.v>0);
+  const maxP=Math.max(...byTypePing.map(x=>x.v),1);
+  $('bars-ping').innerHTML=byTypePing.map(x=>barRow(x.label+' · ping',x.v/maxP*100,x.v.toFixed(1)+'ms','var(--teal)')).join('');
+
+  // drill-in select (standard + custom)
+  $('drill-ep').innerHTML=activeTypes(R).map(ty=>`<option value="${ty}">${labelOf(ty)}</option>`).join('');
+  S.drill.ep=$('drill-ep').value;S.drill.tab='waterfall';
+  renderDrill();
+
+  // raw logs
+  $('raw-tbody').innerHTML=R.map(r=>{
+    const sc=r.success==='Y'?'ok':'bad';const sCls='s'+String(r.status)[0];
+    return `<tr><td>${r.ts.toISOString().slice(11,19)}</td>
+      <td>${tagHTML(r.type,'font-size:9px')}</td>
+      <td>${r.host}</td><td><span class="st-pill ${sCls}">${r.status==null?'-':r.status}</span></td>
+      <td>${r.dns}</td><td>${r.tcp}</td><td>${r.tls}</td><td>${r.ttfb}</td><td>${r.download}</td>
+      <td class="${sc}">${r.total}</td><td>${r.sent}</td><td>${r.recv}</td>
+      <td class="${r.loss>0?'bad':''}">${r.loss}</td><td>${r.pAvg==null?'-':r.pAvg}</td>
+      <td>${r.jitter==null?'-':r.jitter}</td><td>${r.eff==null?'-':(r.eff.toFixed?r.eff.toFixed(0):r.eff)}</td></tr>`;
+  }).join('');
+
+  // failures
+  $('fail-badge').textContent=failRows.length;
+  $('fail-list').innerHTML=failRows.length?failRows.map(r=>{
+    const reason=r.errorMessage?r.errorMessage:
+      r.status===401?'Unauthorized — auth/token required':r.status===429?'Rate limited':
+      r.status===500?'Server error':r.status===502?'Bad gateway — upstream not responding':
+      r.status==null?'Measurement never ran (network/config error)':'Failed';
+    return `<div class="fail-card"><span class="fi">⚠️</span>
+      <div><div class="ft">${r.status==null?'':r.status+' · '}${reason}</div><div class="fd">${r.url}</div></div>
+      <div class="fm">${S.country}${S.city?' · '+S.city:''}<br>loss ${r.loss}% · ${r.total}ms</div></div>`;
+  }).join(''):`<div style="color:var(--ink2);font-size:13px;padding:20px;text-align:center">No failures — every endpoint returned a healthy response. 🎉</div>`;
+}
+
+function wfRow(name,seg){
+  if(seg.total==null){
+    return `<div class="wf-row"><span class="nm">${name}</span><div class="wf-bar" style="background:var(--subtle)"></div><span class="tot" style="color:var(--ink3)">no data</span></div>`;
+  }
+  const total=seg.total||1;
+  const segs=SEGS.map(s=>{
+    const v=seg[s.k]||0;const pct=Math.max(2,v/total*100);
+    const col=LIGHTSEG[s.l]?'rgba(0,9,44,.72)':'#fff';
+    return `<div class="wf-seg" style="width:${pct}%;background:${s.c};color:${col}">${v>25?Math.round(v)+'ms':''}
+      <span class="tip"><span style="color:${s.c}">${s.l}</span>: ${Math.round(v)}ms · ${Math.round(v/total*100)}%</span></div>`;
+  }).join('');
+  return `<div class="wf-row"><span class="nm">${name}</span><div class="wf-bar">${segs}</div><span class="tot">${Math.round(total)}ms</span></div>`;
+}
+
+function renderDonut(R){
+  const codes={};R.forEach(r=>{const lbl=({200:'200 OK',301:'301 Redirect',401:'401 Unauthorized',429:'429 Rate Limited',500:'500 Server Error',502:'502 Bad Gateway'})[r.status]||(r.status==null?'No response':(r.status+''));codes[lbl]=(codes[lbl]||0)+1;});
+  const causeColors={'200 OK':'#10B981','301 Redirect':'#2EC4B6','401 Unauthorized':'#9672F8','429 Rate Limited':'#F5B82C','500 Server Error':'#EF4444','502 Bad Gateway':'#F35800','No response':'#8A90A6'};
+  const data=Object.entries(codes).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({l,v,color:causeColors[l]||'#9672F8'}));
+  const total=data.reduce((s,d)=>s+d.v,0)||1;const sz=140,cx=70,cy=70,r2=60;let cum=-90;
+  const paths=data.map(d=>{
+    const ang=d.v/total*360,start=cum;cum+=ang;
+    if(d.v===total){return `<circle cx="${cx}" cy="${cy}" r="${r2}" fill="none" stroke="${d.color}" stroke-width="20"/>`;}
+    const x1=cx+r2*Math.cos(start*Math.PI/180),y1=cy+r2*Math.sin(start*Math.PI/180);
+    const x2=cx+r2*Math.cos((start+ang)*Math.PI/180),y2=cy+r2*Math.sin((start+ang)*Math.PI/180);
+    return `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r2} ${r2} 0 ${ang>180?1:0} 1 ${x2} ${y2} Z" fill="${d.color}"/>`;
+  }).join('');
+  $('donut').innerHTML=paths+`<circle cx="${cx}" cy="${cy}" r="34" fill="var(--surface)"/>
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="20" font-weight="800" fill="var(--navy)">${R.length}</text>
+    <text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="9" fill="var(--ink3)">responses</text>`;
+  $('donut-legend').innerHTML=data.map(d=>`<div class="dl"><i style="background:${d.color}"></i>${d.l}<b>${d.v} · ${Math.round(d.v/total*100)}%</b></div>`).join('');
+}
+
+/* ===== drill-in ===== */
+function drillTab(t){S.drill.tab=t;document.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('on',x.dataset.d===t));renderDrill();}
+function renderDrill(){
+  S.drill.ep=$('drill-ep').value;
+  const rows=S.rows.filter(r=>r.type===S.drill.ep);
+  const body=$('drill-body');
+  if(S.drill.tab==='waterfall'){
+    body.innerHTML=`<div class="wf-legend">${SEGS.map(s=>`<span><i style="background:${s.c}"></i>${s.l}</span>`).join('')}</div>`+
+      rows.map(r=>wfRow(r.host+' · '+(r.url.length>46?'…'+r.url.slice(-44):r.url), {dns:r.dns,tcp:r.tcp,tls:r.tls,ttfb:r.ttfb,download:r.download,total:r.total})).join('');
+  }else if(S.drill.tab==='packet'){
+    body.innerHTML=`<div class="raw-wrap"><table class="raw-table"><thead><tr>
+      <th>Host</th><th>Status</th><th>Sent</th><th>Recv</th><th>Dropped</th><th>Loss%</th>
+      <th>Ping Min</th><th>Ping Avg</th><th>Ping Max</th><th>Jitter</th><th>Eff. lat</th><th>Lat type</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${r.host}</td><td><span class="st-pill s${String(r.status)[0]}">${r.status==null?'-':r.status}</span></td>
+        <td>${r.sent}</td><td>${r.recv}</td><td class="${r.dropped>0?'bad':''}">${r.dropped}</td>
+        <td class="${r.loss>0?'bad':''}">${r.loss}</td><td>${r.pMin==null?'-':r.pMin}</td><td>${r.pAvg==null?'-':r.pAvg}</td>
+        <td>${r.pMax==null?'-':r.pMax}</td><td>${r.jitter==null?'-':r.jitter}</td><td>${r.eff==null?'-':(r.eff.toFixed?r.eff.toFixed(1):r.eff)}</td><td>${r.latType}</td></tr>`).join('')+
+      `</tbody></table></div>`;
+  }else{
+    body.innerHTML=`<div class="raw-wrap"><table class="raw-table"><thead><tr>
+      <th>Host</th><th>URL</th><th>Status</th><th>Success</th><th>DNS</th><th>TCP</th><th>TLS</th><th>TTFB</th><th>Download</th><th>HTTP Total</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${r.host}</td><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis">${r.url}</td>
+        <td><span class="st-pill s${String(r.status)[0]}">${r.status==null?'-':r.status}</span></td>
+        <td class="${r.success==='Y'?'ok':'bad'}">${r.success}</td>
+        <td>${r.dns}</td><td>${r.tcp}</td><td>${r.tls}</td><td>${r.ttfb}</td><td>${r.download}</td><td class="${r.success==='Y'?'ok':'bad'}">${r.total}</td></tr>`).join('')+
+      `</tbody></table></div>`;
+  }
+}
+
+function barRow(name,pct,val,color){
+  return `<div class="bar-row"><span class="nm">${name}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,pct)}%;background:${color}"></div></div><span class="vv">${val}</span></div>`;
+}
+function switchTab(t){document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x.dataset.t===t));$('tv-raw').classList.toggle('on',t==='raw');$('tv-fail').classList.toggle('on',t==='fail');}
+
+function signIn(){
+  S.signedIn=true;$('wall').classList.add('hidden');$('dash').classList.remove('locked');
+  $('export-bar').style.display='flex';$('exp-app').textContent=host(S.url);
+  $('exp-meta').textContent=`${S.cat} · ${S.country} · ${S.endpoints.length} endpoints · ${S.rows.length} measurements`;
+}
+
+function doExport(fmt){
+  if(fmt==='Excel'){exportCSV();return;}
+  alert(`Generating ${fmt} report for ${host(S.url)}…\n\n(In production this calls the report-export service and returns a branded ${fmt} file with KPIs, waterfall, HTTP causes, packet & ping detail, drill-in, failure logs and the full raw table.)`);
+}
+function exportCSV(){
+  const headers=['Timestamp_UTC','Timestamp_Local','Country','Test_City','Benchmark_Category','Source_Domain','Endpoint_Type','Host','URL','HTTP_StatusCode','Success','DNS_ms','TCP_ms','TLS_ms','TTFB_ms','Download_ms','HTTP_Total_ms','Packets_Sent','Packets_Received','Packets_Dropped','PacketLoss_pct','Ping_Min_ms','Ping_Avg_ms','Ping_Max_ms','Jitter_ms','Effective_Latency_ms','Latency_Type'];
+  const src='https://'+S.url.replace(/^https?:\/\//,'');
+  const rows=S.rows.map(r=>[
+    r.ts.toISOString().slice(0,19).replace('T',' '),
+    new Date(r.ts.getTime()+5.5*3600000).toISOString().slice(0,19).replace('T',' '),
+    S.country,S.city,S.cat,src,r.type,r.host,r.url,r.status,r.success,
+    r.dns,r.tcp,r.tls,r.ttfb,r.download,r.total,r.sent,r.recv,r.dropped,r.loss,
+    r.pMin==null?'':r.pMin,r.pAvg==null?'':r.pAvg,r.pMax==null?'':r.pMax,r.jitter==null?'':r.jitter,r.eff,r.latType
+  ]);
+  const csv=[headers,...rows].map(r=>r.map(c=>{const s=String(c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=`mozark_service_access_${host(S.url).replace(/\./g,'_')}.csv`;a.click();
+}
+
+validate();
+</script>
+</body>
+</html>
